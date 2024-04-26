@@ -20,5 +20,6 @@
         public Guid ChatId { get; set; }
         [ForeignKey(nameof(ChatId))]
         public virtual Chat Chat { get; set; } = null!;
+        public bool IsDeleted { get; set; }
     }
 }

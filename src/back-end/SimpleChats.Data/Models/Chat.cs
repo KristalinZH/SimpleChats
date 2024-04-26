@@ -13,6 +13,8 @@
         [Required]
         [MaxLength(NameMaxLength)]
         public string ChatName { get; set; } = null!;
+        public DateTime CreatedOn { get; set; }
         public virtual IEnumerable<Message> Messages { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
