@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleChats.API", "SimpleChats.API\SimpleChats.API.csproj", "{B6850A6F-36D8-4D85-A670-F2DE1D99248D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleChats.Data", "SimpleChats.Data\SimpleChats.Data.csproj", "{29E556F7-C6E0-4007-9808-7C4605EA1E7D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B6850A6F-36D8-4D85-A670-F2DE1D99248D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6850A6F-36D8-4D85-A670-F2DE1D99248D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6850A6F-36D8-4D85-A670-F2DE1D99248D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6850A6F-36D8-4D85-A670-F2DE1D99248D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29E556F7-C6E0-4007-9808-7C4605EA1E7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29E556F7-C6E0-4007-9808-7C4605EA1E7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29E556F7-C6E0-4007-9808-7C4605EA1E7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29E556F7-C6E0-4007-9808-7C4605EA1E7D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DCAF3E0B-860C-44BC-8396-426F7999B987}
+	EndGlobalSection
+EndGlobal

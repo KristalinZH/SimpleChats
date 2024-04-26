@@ -19,13 +19,12 @@
 /src/back-end/SimpleChats.Data/obj
 /src/back-end/SimpleChats.Data/bin
 
-/src/back-end/*.sln
-
 /src/back-end/SimpleChats.API/*.rsuser
 /src/back-end/SimpleChats.API/*.suo
 /src/back-end/SimpleChats.API/*.user
 /src/back-end/SimpleChats.API/*.userosscache
 /src/back-end/SimpleChats.API/*.sln.docstates
+
 # User-specific files
 /src/back-end/*.rsuser
 /src/back-end/*.suo
