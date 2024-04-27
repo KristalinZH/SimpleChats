@@ -50,7 +50,6 @@
 
             return JsonConvert.SerializeObject(anonChat, Formatting.Indented);
         }
-
         public async Task<string> ExportChatsAsync()
         {
             Chat[] chats = await context.Chats
@@ -73,15 +72,98 @@
 
             return JsonConvert.SerializeObject(anonChats, Formatting.Indented);
         }
-
-        public Task ImportChatAsync()
+        public async Task ImportChatAsync(string json)
         {
-            throw new NotImplementedException();
+            var desChat = JsonConvert.DeserializeAnonymousType(json, new
+            {
+                ChatName = "",
+                CreatedOn = "",
+                Messages = new[]
+                {
+                    new
+                    {
+                        Text = "",
+                        Sender = "",
+                        Receiver = "",
+                        SentOn = ""
+                    }
+                }
+            });
+
+            Chat chat = new Chat()
+            {
+                ChatName = desChat!.ChatName,
+                CreatedOn = DateTime.Parse(desChat!.CreatedOn, CultureInfo.InvariantCulture)
+            };
+
+            await context.Chats.AddAsync(chat);
+
+            Message[] messages = desChat!.Messages
+                .Select(x => new Message()
+                {
+                    ChatId = chat.Id,
+                    Text = x.Text,
+                    Sender = x.Sender,
+                    Receiver = x.Receiver,
+                    SentOn = DateTime.Parse(x.SentOn, CultureInfo.InvariantCulture)
+                })
+                .ToArray();
+
+            await context.Messages.AddRangeAsync(messages);
+            await context.SaveChangesAsync();
         }
-
-        public Task ImportChatsAsync()
+        public async Task ImportChatsAsync(string json)
         {
-            throw new NotImplementedException();
+            var desChats = JsonConvert.DeserializeAnonymousType(json, new[]
+            {
+                new
+                {
+                    ChatName = "",
+                    CreatedOn = "",
+                    Messages = new[]
+                    {
+                        new
+                        {
+                            Text = "",
+                            Sender = "",
+                            Receiver = "",
+                            SentOn = ""
+                        }
+                    }
+                }
+            });
+
+            Chat[] chats = desChats!
+                .Select(c => new Chat()
+                {
+                    ChatName = c.ChatName,
+                    CreatedOn = DateTime.Parse(c.CreatedOn, CultureInfo.InvariantCulture)
+                })
+                .ToArray();
+
+            await context.Chats.AddRangeAsync(chats);
+
+            List<Message> messages = new List<Message>();
+            Message[] chatMessages;
+
+            for(int i = 0; i < chats.Length; i++)
+            {
+                chatMessages = desChats![i].Messages
+                    .Select(m => new Message() 
+                    {
+                        ChatId = chats[i].Id,
+                        Text = m.Text,
+                        Sender = m.Sender,
+                        Receiver = m.Receiver,
+                        SentOn = DateTime.Parse(m.SentOn, CultureInfo.InvariantCulture)
+                    })
+                    .ToArray();
+
+                messages.AddRange(chatMessages);
+            }
+
+            await context.Messages.AddRangeAsync(messages);
+            await context.SaveChangesAsync();
         }
     }
 }

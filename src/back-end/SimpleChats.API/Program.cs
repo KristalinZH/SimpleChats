@@ -5,6 +5,9 @@ namespace SimpleChats.API
 
     using Data;
 
+    using Extensions;
+    using Services.Contracts;
+
     public class Program
     {
         public static void Main(string[] args)
@@ -16,6 +19,8 @@ namespace SimpleChats.API
                 ?? throw new InvalidOperationException("Missing or invalid connection string!");
 
             builder.Services.AddDbContext<ChatDBContext>(options => options.UseSqlServer(connectionString));
+
+            builder.Services.AddServices(typeof(IChatService));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
