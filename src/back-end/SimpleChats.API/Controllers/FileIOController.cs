@@ -21,8 +21,6 @@
         [Route("export/{chatId}")]
         public async Task<IActionResult> ExportChat(string chatId)
         {
-            string tempFilePath = string.Empty;
-
             try
             {
                 bool chatExists = await chatService.ChatExistsByIdAsync(chatId);
@@ -34,44 +32,31 @@
 
                 string exportedChat = await fileService.ExportChatByIdAsync(chatId);
 
-                tempFilePath = Path.GetTempFileName();
+                MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(exportedChat));
 
-                System.IO.File.WriteAllText(tempFilePath, exportedChat);
+                return File(stream, "application/json", "chat.json");
 
-                return File(tempFilePath, "application/json", "chat.json");
             }
             catch
             {
                 return StatusCode(500, "Unexpected error occured!");
-            }
-            finally
-            {
-                System.IO.File.Delete(tempFilePath);
             }
         }
         [HttpGet]
         [Route("export/all")]
         public async Task<IActionResult> ExportAll()
         {
-            string tempFilePath = string.Empty;
-
             try
             {
-                string exportedChat = await fileService.ExportChatsAsync();
+                string exportedChats = await fileService.ExportChatsAsync();
 
-                tempFilePath = Path.GetTempFileName();
+                MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(exportedChats));
 
-                System.IO.File.WriteAllText(tempFilePath, exportedChat);
-
-                return File(tempFilePath, "application/json", "allChats.json");
+                return File(stream, "application/json", "allChats.json");
             }
             catch
             {
                 return StatusCode(500, "Unexpected error occured!");
-            }
-            finally
-            {
-                System.IO.File.Delete(tempFilePath);
             }
         }
         [HttpPost]
@@ -100,7 +85,7 @@
                     await fileService.ImportChatAsync(content);
                 }
 
-                return RedirectToAction("AllChats", "Chats");
+                return Ok("Chat imported successfully!");
             }
             catch
             {
@@ -133,7 +118,7 @@
                     await fileService.ImportChatsAsync(content);
                 }
 
-                return RedirectToAction("AllChats", "Chats");
+                return Ok("Chats imported successfully!");
             }
             catch
             {

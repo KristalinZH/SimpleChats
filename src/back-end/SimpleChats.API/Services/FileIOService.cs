@@ -38,14 +38,12 @@
                     SentOn = m.SentOn.ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture)
                 })
                 .ToArray();
-            
-            string messagesSeriliazation = JsonConvert.SerializeObject(messages, Formatting.Indented);
 
             var anonChat = new
             {
                 ChatName = chat!.ChatName,
                 CreatedOn = chat!.CreatedOn.ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture),
-                Messages = messagesSeriliazation
+                Messages = anonMessages
             };
 
             return JsonConvert.SerializeObject(anonChat, Formatting.Indented);
@@ -146,10 +144,10 @@
             List<Message> messages = new List<Message>();
             Message[] chatMessages;
 
-            for(int i = 0; i < chats.Length; i++)
+            for (int i = 0; i < chats.Length; i++)
             {
                 chatMessages = desChats![i].Messages
-                    .Select(m => new Message() 
+                    .Select(m => new Message()
                     {
                         ChatId = chats[i].Id,
                         Text = m.Text,

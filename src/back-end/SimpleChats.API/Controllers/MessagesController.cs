@@ -42,12 +42,12 @@
             }
         }
         [HttpPost]
-        [Route("chat/{chatId}/sent")]
-        public async Task<IActionResult> SentMessage(string chatId, [FromForm] MessageServiceModel message)
+        [Route("chat/sent")]
+        public async Task<IActionResult> SentMessage([FromForm] MessageServiceModel message)
         {
             try
             {
-                bool chatExists = await chatService.ChatExistsByIdAsync(chatId);
+                bool chatExists = await chatService.ChatExistsByIdAsync(message.ChatId);
 
                 if (!chatExists)
                 {
@@ -61,7 +61,7 @@
 
                 await messageService.AddMessageAsync(message);
 
-                return RedirectToAction(nameof(AllMessages), new { chatId });
+                return Ok("Message sent successfully!");
             }
             catch
             {
@@ -69,12 +69,12 @@
             }
         }
         [HttpPatch]
-        [Route("chat/{chatId}/edit")]
-        public async Task<IActionResult> EditMessage(string chatId, [FromForm] MessageServiceModel message)
+        [Route("chat/edit")]
+        public async Task<IActionResult> EditMessage([FromForm] MessageServiceModel message)
         {
             try
             {
-                bool chatExists = await chatService.ChatExistsByIdAsync(chatId);
+                bool chatExists = await chatService.ChatExistsByIdAsync(message.ChatId);
 
                 if (!chatExists)
                 {
@@ -95,7 +95,7 @@
 
                 await messageService.UpdateMessageByIdAsync(message.Id, message.Text);
 
-                return RedirectToAction(nameof(AllMessages), new { chatId });
+                return Ok("Message edited successfully!");
             }
             catch
             {
@@ -124,7 +124,7 @@
 
                 await messageService.DeleteMessageByIdAsync(messageId);
 
-                return RedirectToAction(nameof(AllMessages), new { chatId });
+                return Ok("Message deleted successfully!");
             }
             catch
             {

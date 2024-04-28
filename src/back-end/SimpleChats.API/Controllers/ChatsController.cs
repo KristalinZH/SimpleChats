@@ -34,7 +34,7 @@
         }
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateChat([FromForm]ChatServiceModel chat)
+        public async Task<IActionResult> CreateChat([FromForm] ChatServiceModel chat)
         {
             try
             {
@@ -45,7 +45,7 @@
 
                 await chatService.AddChatAsync(chat);
 
-                return RedirectToAction(nameof(AllChats));
+                return Ok("Chat created succesfully");
             }
             catch
             {
@@ -72,7 +72,7 @@
 
                 await chatService.EditChatNameAsync(chat.Id, chat.ChatName);
 
-                return RedirectToAction(nameof(AllChats));
+                return Ok("Chat renamed successfully!");
             }
             catch
             {
@@ -81,7 +81,7 @@
         }
         [HttpDelete]
         [Route("delete/{chatId}")]
-        public async Task<IActionResult>DeleteChat(string chatId)
+        public async Task<IActionResult> DeleteChat(string chatId)
         {
             try
             {
@@ -94,7 +94,7 @@
 
                 await chatService.DeleteChatByIdAsync(chatId);
 
-                return RedirectToAction(nameof(AllChats));
+                return Ok("Chat deleted successfully!");
             }
             catch
             {
