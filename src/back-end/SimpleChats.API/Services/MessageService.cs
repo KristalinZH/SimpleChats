@@ -49,9 +49,10 @@
 
             var data = await context.Messages
                 .Where(m => m.ChatId == cId && !m.IsDeleted)
+                .OrderByDescending(m => m.SentOn)
                 .Select(m => new
                 {
-                    Id=m.Id,
+                    Id = m.Id,
                     Text = m.Text,
                     Sender = m.Sender,
                     Receiver = m.Receiver,
@@ -80,7 +81,7 @@
 
             await context.SaveChangesAsync();
         }
-        public async Task<bool> MessageExistById(string id)
+        public async Task<bool> MessageExistByIdAsync(string id)
         {
             Guid mId = Guid.Parse(id);
 

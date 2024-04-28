@@ -8,6 +8,6 @@
         Task UpdateMessageByIdAsync(string id, string newText);
         Task DeleteMessageByIdAsync(string id);
         Task<IEnumerable<MessageServiceModel>> GetMessagesByChatIdAsync(string chatId);
-        Task<bool> MessageExistById(string id);
+        Task<bool> MessageExistByIdAsync(string id);
     }
 }

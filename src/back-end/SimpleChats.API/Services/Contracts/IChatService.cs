@@ -6,7 +6,7 @@
     {
         Task AddChatAsync(ChatServiceModel chat);
         Task DeleteChatByIdAsync(string id);
-        Task EditChatNameAynsc(string id, string newName);
+        Task EditChatNameAsync(string id, string newName);
         Task<bool> ChatExistsByIdAsync(string id);
         Task<IEnumerable<ChatServiceModel>> GetAllChats();
     }

@@ -46,7 +46,7 @@
 
             await context.SaveChangesAsync();
         }
-        public async Task EditChatNameAynsc(string id, string newName)
+        public async Task EditChatNameAsync(string id, string newName)
         {
             Guid cid = Guid.Parse(id);
 
@@ -60,6 +60,7 @@
         {
             var data = await context.Chats
                 .Where(c => !c.IsDeleted)
+                .OrderByDescending(c => c.CreatedOn)
                 .Select(c => new
                 {
                     Id = c.Id,
@@ -68,7 +69,7 @@
                 })
                 .ToListAsync();
 
-            IEnumerable<ChatServiceModel> chats = data.Select(c=>new ChatServiceModel()
+            IEnumerable<ChatServiceModel> chats = data.Select(c => new ChatServiceModel()
             {
                 Id = c.Id.ToString(),
                 ChatName = c.ChatName,
