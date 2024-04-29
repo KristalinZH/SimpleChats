@@ -5,6 +5,7 @@
 
     using ServiceModels;
     using Services.Contracts;
+    using SimpleChats.Data.Models;
 
     [Route("api/[controller]")]
     [ApiController]
@@ -58,7 +59,14 @@
         {
             try
             {
-                bool chatExists = await chatService.ChatExistsByIdAsync(chat.Id);
+                bool isValidId = Guid.TryParse(chat.Id, out Guid id);
+
+                if (!isValidId)
+                {
+                    return BadRequest("Invalid type of id");
+                }
+
+                bool chatExists = await chatService.ChatExistsByIdAsync(id);
 
                 if (!chatExists)
                 {
@@ -70,7 +78,7 @@
                     return BadRequest(ModelState);
                 }
 
-                await chatService.EditChatNameAsync(chat.Id, chat.ChatName);
+                await chatService.EditChatNameAsync(id, chat.ChatName);
 
                 return Ok("Chat renamed successfully!");
             }
@@ -85,14 +93,21 @@
         {
             try
             {
-                bool chatExists = await chatService.ChatExistsByIdAsync(chatId);
+                bool isValidId = Guid.TryParse(chatId, out Guid id);
+
+                if (!isValidId)
+                {
+                    return BadRequest("Invalid type of id");
+                }
+
+                bool chatExists = await chatService.ChatExistsByIdAsync(id);
 
                 if (!chatExists)
                 {
                     return NotFound("Not existing chat");
                 }
 
-                await chatService.DeleteChatByIdAsync(chatId);
+                await chatService.DeleteChatByIdAsync(id);
 
                 return Ok("Chat deleted successfully!");
             }

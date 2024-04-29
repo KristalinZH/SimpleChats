@@ -2,9 +2,9 @@
 {
     public interface IFileIOService
     {
-        Task ImportChatAsync(string json);
-        Task ImportChatsAsync(string json);
-        Task<string> ExportChatByIdAsync(string chatId);
+        Task<bool> ImportChatAsync(string json);
+        Task<bool> ImportChatsAsync(string json);
+        Task<string> ExportChatByIdAsync(Guid chatId);
         Task<string> ExportChatsAsync();
     }
 }

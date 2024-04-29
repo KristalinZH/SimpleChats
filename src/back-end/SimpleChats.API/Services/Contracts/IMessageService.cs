@@ -5,9 +5,9 @@
     public interface IMessageService
     {
         Task AddMessageAsync(MessageServiceModel message);
-        Task UpdateMessageByIdAsync(string id, string newText);
-        Task DeleteMessageByIdAsync(string id);
-        Task<IEnumerable<MessageServiceModel>> GetMessagesByChatIdAsync(string chatId);
-        Task<bool> MessageExistByIdAsync(string id);
+        Task UpdateMessageByIdAsync(Guid id, string newText);
+        Task DeleteMessageByIdAsync(Guid id);
+        Task<IEnumerable<MessageServiceModel>> GetMessagesByChatIdAsync(Guid chatId);
+        Task<bool> MessageExistByIdAsync(Guid id);
     }
 }

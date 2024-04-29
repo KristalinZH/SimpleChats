@@ -5,9 +5,9 @@
     public interface IChatService
     {
         Task AddChatAsync(ChatServiceModel chat);
-        Task DeleteChatByIdAsync(string id);
-        Task EditChatNameAsync(string id, string newName);
-        Task<bool> ChatExistsByIdAsync(string id);
+        Task DeleteChatByIdAsync(Guid id);
+        Task EditChatNameAsync(Guid id, string newName);
+        Task<bool> ChatExistsByIdAsync(Guid id);
         Task<IEnumerable<ChatServiceModel>> GetAllChats();
     }
 }

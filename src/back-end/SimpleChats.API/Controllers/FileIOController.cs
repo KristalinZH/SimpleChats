@@ -23,14 +23,21 @@
         {
             try
             {
-                bool chatExists = await chatService.ChatExistsByIdAsync(chatId);
+                bool isValidId = Guid.TryParse(chatId, out Guid id);
+
+                if (!isValidId)
+                {
+                    return BadRequest("Invalid type of id");
+                }
+
+                bool chatExists = await chatService.ChatExistsByIdAsync(id);
 
                 if (!chatExists)
                 {
                     return NotFound("Not existing chat");
                 }
 
-                string exportedChat = await fileService.ExportChatByIdAsync(chatId);
+                string exportedChat = await fileService.ExportChatByIdAsync(id);
 
                 MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(exportedChat));
 
@@ -82,7 +89,12 @@
 
                     string content = Encoding.UTF8.GetString(byteContent);
 
-                    await fileService.ImportChatAsync(content);
+                    bool success = await fileService.ImportChatAsync(content);
+
+                    if (!success)
+                    {
+                        return BadRequest("Invalid file content type!");
+                    }
                 }
 
                 return Ok("Chat imported successfully!");
@@ -115,7 +127,12 @@
 
                     string content = Encoding.UTF8.GetString(byteContent);
 
-                    await fileService.ImportChatsAsync(content);
+                    bool success = await fileService.ImportChatsAsync(content);
+
+                    if (!success)
+                    {
+                        return BadRequest("Invalid file content type!");
+                    }
                 }
 
                 return Ok("Chats imported successfully!");

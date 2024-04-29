@@ -19,14 +19,12 @@
         {
             context = _context;
         }
-        public async Task<string> ExportChatByIdAsync(string chatId)
+        public async Task<string> ExportChatByIdAsync(Guid chatId)
         {
-            Guid id = Guid.Parse(chatId);
-
-            Chat? chat = await context.Chats.FindAsync(id);
+            Chat? chat = await context.Chats.FindAsync(chatId);
 
             Message[] messages = await context.Messages
-                .Where(m => m.ChatId == id && !m.IsDeleted)
+                .Where(m => m.ChatId == chatId && !m.IsDeleted)
                 .ToArrayAsync();
 
             var anonMessages = messages
@@ -70,51 +68,11 @@
 
             return JsonConvert.SerializeObject(anonChats, Formatting.Indented);
         }
-        public async Task ImportChatAsync(string json)
+        public async Task<bool> ImportChatAsync(string json)
         {
-            var desChat = JsonConvert.DeserializeAnonymousType(json, new
+            try
             {
-                ChatName = "",
-                CreatedOn = "",
-                Messages = new[]
-                {
-                    new
-                    {
-                        Text = "",
-                        Sender = "",
-                        Receiver = "",
-                        SentOn = ""
-                    }
-                }
-            });
-
-            Chat chat = new Chat()
-            {
-                ChatName = desChat!.ChatName,
-                CreatedOn = DateTime.Parse(desChat!.CreatedOn, CultureInfo.InvariantCulture)
-            };
-
-            await context.Chats.AddAsync(chat);
-
-            Message[] messages = desChat!.Messages
-                .Select(x => new Message()
-                {
-                    ChatId = chat.Id,
-                    Text = x.Text,
-                    Sender = x.Sender,
-                    Receiver = x.Receiver,
-                    SentOn = DateTime.Parse(x.SentOn, CultureInfo.InvariantCulture)
-                })
-                .ToArray();
-
-            await context.Messages.AddRangeAsync(messages);
-            await context.SaveChangesAsync();
-        }
-        public async Task ImportChatsAsync(string json)
-        {
-            var desChats = JsonConvert.DeserializeAnonymousType(json, new[]
-            {
-                new
+                var desChat = JsonConvert.DeserializeAnonymousType(json, new
                 {
                     ChatName = "",
                     CreatedOn = "",
@@ -128,40 +86,98 @@
                             SentOn = ""
                         }
                     }
-                }
-            });
+                });
 
-            Chat[] chats = desChats!
-                .Select(c => new Chat()
+                Chat chat = new Chat()
                 {
-                    ChatName = c.ChatName,
-                    CreatedOn = DateTime.Parse(c.CreatedOn, CultureInfo.InvariantCulture)
-                })
-                .ToArray();
+                    ChatName = desChat!.ChatName,
+                    CreatedOn = DateTime.Parse(desChat!.CreatedOn, CultureInfo.InvariantCulture)
+                };
 
-            await context.Chats.AddRangeAsync(chats);
+                await context.Chats.AddAsync(chat);
 
-            List<Message> messages = new List<Message>();
-            Message[] chatMessages;
-
-            for (int i = 0; i < chats.Length; i++)
-            {
-                chatMessages = desChats![i].Messages
-                    .Select(m => new Message()
+                Message[] messages = desChat!.Messages
+                    .Select(x => new Message()
                     {
-                        ChatId = chats[i].Id,
-                        Text = m.Text,
-                        Sender = m.Sender,
-                        Receiver = m.Receiver,
-                        SentOn = DateTime.Parse(m.SentOn, CultureInfo.InvariantCulture)
+                        ChatId = chat.Id,
+                        Text = x.Text,
+                        Sender = x.Sender,
+                        Receiver = x.Receiver,
+                        SentOn = DateTime.Parse(x.SentOn, CultureInfo.InvariantCulture)
                     })
                     .ToArray();
 
-                messages.AddRange(chatMessages);
-            }
+                await context.Messages.AddRangeAsync(messages);
+                await context.SaveChangesAsync();
 
-            await context.Messages.AddRangeAsync(messages);
-            await context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }   
+        }
+        public async Task<bool> ImportChatsAsync(string json)
+        {
+            try
+            {
+                var desChats = JsonConvert.DeserializeAnonymousType(json, new[]
+                {
+                    new
+                    {
+                        ChatName = "",
+                        CreatedOn = "",
+                        Messages = new[]
+                        {
+                            new
+                            {
+                                Text = "",
+                                Sender = "",
+                                Receiver = "",
+                                SentOn = ""
+                            }
+                        }
+                    }
+                });
+
+                Chat[] chats = desChats!
+                    .Select(c => new Chat()
+                    {
+                        ChatName = c.ChatName,
+                        CreatedOn = DateTime.Parse(c.CreatedOn, CultureInfo.InvariantCulture)
+                    })
+                    .ToArray();
+
+                await context.Chats.AddRangeAsync(chats);
+
+                List<Message> messages = new List<Message>();
+                Message[] chatMessages;
+
+                for (int i = 0; i < chats.Length; i++)
+                {
+                    chatMessages = desChats![i].Messages
+                        .Select(m => new Message()
+                        {
+                            ChatId = chats[i].Id,
+                            Text = m.Text,
+                            Sender = m.Sender,
+                            Receiver = m.Receiver,
+                            SentOn = DateTime.Parse(m.SentOn, CultureInfo.InvariantCulture)
+                        })
+                        .ToArray();
+
+                    messages.AddRange(chatMessages);
+                }
+
+                await context.Messages.AddRangeAsync(messages);
+                await context.SaveChangesAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

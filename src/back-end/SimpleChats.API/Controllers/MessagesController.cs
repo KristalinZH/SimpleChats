@@ -23,14 +23,21 @@
         {
             try
             {
-                bool chatExists = await chatService.ChatExistsByIdAsync(chatId);
+                bool isValidChatId = Guid.TryParse(chatId, out Guid cId);
+
+                if (!isValidChatId)
+                {
+                    return BadRequest("Invalid type of chat id");
+                }
+
+                bool chatExists = await chatService.ChatExistsByIdAsync(cId);
 
                 if (!chatExists)
                 {
                     return NotFound("Not existing chat");
                 }
 
-                IEnumerable<MessageServiceModel> messages = await messageService.GetMessagesByChatIdAsync(chatId);
+                IEnumerable<MessageServiceModel> messages = await messageService.GetMessagesByChatIdAsync(cId);
 
                 string serilizaedMessages = JsonConvert.SerializeObject(messages, Formatting.Indented);
 
@@ -47,7 +54,14 @@
         {
             try
             {
-                bool chatExists = await chatService.ChatExistsByIdAsync(message.ChatId);
+                bool isValidChatId = Guid.TryParse(message.ChatId, out Guid cId);
+
+                if (!isValidChatId)
+                {
+                    return BadRequest("Invalid type of chat id");
+                }
+
+                bool chatExists = await chatService.ChatExistsByIdAsync(cId);
 
                 if (!chatExists)
                 {
@@ -74,14 +88,28 @@
         {
             try
             {
-                bool chatExists = await chatService.ChatExistsByIdAsync(message.ChatId);
+                bool isValidMessageId = Guid.TryParse(message.Id, out Guid mId);
+
+                if (!isValidMessageId)
+                {
+                    return BadRequest("Invalid type of message id");
+                }
+
+                bool isValidChatId = Guid.TryParse(message.ChatId, out Guid cId);
+
+                if (!isValidChatId)
+                {
+                    return BadRequest("Invalid type of chat id");
+                }
+
+                bool chatExists = await chatService.ChatExistsByIdAsync(cId);
 
                 if (!chatExists)
                 {
                     return NotFound("Not existing chat");
                 }
 
-                bool messageExists = await messageService.MessageExistByIdAsync(message.Id);
+                bool messageExists = await messageService.MessageExistByIdAsync(mId);
 
                 if (!messageExists)
                 {
@@ -93,7 +121,7 @@
                     return BadRequest(ModelState);
                 }
 
-                await messageService.UpdateMessageByIdAsync(message.Id, message.Text);
+                await messageService.UpdateMessageByIdAsync(mId, message.Text);
 
                 return Ok("Message edited successfully!");
             }
@@ -108,21 +136,35 @@
         {
             try
             {
-                bool chatExists = await chatService.ChatExistsByIdAsync(chatId);
+                bool isValidChatId = Guid.TryParse(chatId, out Guid cId);
+
+                if (!isValidChatId)
+                {
+                    return BadRequest("Invalid type of chat id");
+                }
+
+                bool isValidMessageId = Guid.TryParse(messageId, out Guid mId);
+
+                if (!isValidMessageId)
+                {
+                    return BadRequest("Invalid type of message id");
+                }
+
+                bool chatExists = await chatService.ChatExistsByIdAsync(cId);
 
                 if (!chatExists)
                 {
                     return NotFound("Not existing chat");
                 }
 
-                bool messageExists = await messageService.MessageExistByIdAsync(messageId);
+                bool messageExists = await messageService.MessageExistByIdAsync(mId);
 
                 if (!messageExists)
                 {
                     return NotFound("Not existing message");
                 }
 
-                await messageService.DeleteMessageByIdAsync(messageId);
+                await messageService.DeleteMessageByIdAsync(mId);
 
                 return Ok("Message deleted successfully!");
             }

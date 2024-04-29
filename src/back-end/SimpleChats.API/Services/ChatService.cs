@@ -30,27 +30,21 @@
             await context.Chats.AddAsync(newChat);
             await context.SaveChangesAsync();
         }
-        public async Task<bool> ChatExistsByIdAsync(string id)
+        public async Task<bool> ChatExistsByIdAsync(Guid id)
         {
-            Guid cid = Guid.Parse(id);
-
-            return await context.Chats.AnyAsync(c => c.Id == cid && !c.IsDeleted);
+            return await context.Chats.AnyAsync(c => c.Id == id && !c.IsDeleted);
         }
-        public async Task DeleteChatByIdAsync(string id)
+        public async Task DeleteChatByIdAsync(Guid id)
         {
-            Guid cid = Guid.Parse(id);
-
-            Chat? chat = await context.Chats.FindAsync(cid);
+            Chat? chat = await context.Chats.FindAsync(id);
 
             chat!.IsDeleted = true;
 
             await context.SaveChangesAsync();
         }
-        public async Task EditChatNameAsync(string id, string newName)
+        public async Task EditChatNameAsync(Guid id, string newName)
         {
-            Guid cid = Guid.Parse(id);
-
-            Chat? chat = await context.Chats.FindAsync(cid);
+            Chat? chat = await context.Chats.FindAsync(id);
 
             chat!.ChatName = newName;
 

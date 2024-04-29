@@ -33,22 +33,18 @@
             await context.Messages.AddAsync(newMessage);
             await context.SaveChangesAsync();
         }
-        public async Task DeleteMessageByIdAsync(string id)
+        public async Task DeleteMessageByIdAsync(Guid id)
         {
-            Guid mId = Guid.Parse(id);
-
-            Message? message = await context.Messages.FindAsync(mId);
+            Message? message = await context.Messages.FindAsync(id);
 
             message!.IsDeleted = true;
 
             await context.SaveChangesAsync();
         }
-        public async Task<IEnumerable<MessageServiceModel>> GetMessagesByChatIdAsync(string chatId)
+        public async Task<IEnumerable<MessageServiceModel>> GetMessagesByChatIdAsync(Guid chatId)
         {
-            Guid cId = Guid.Parse(chatId);
-
             var data = await context.Messages
-                .Where(m => m.ChatId == cId && !m.IsDeleted)
+                .Where(m => m.ChatId == chatId && !m.IsDeleted)
                 .OrderByDescending(m => m.SentOn)
                 .Select(m => new
                 {
@@ -71,21 +67,17 @@
 
             return messages;
         }
-        public async Task UpdateMessageByIdAsync(string id, string newText)
+        public async Task UpdateMessageByIdAsync(Guid id, string newText)
         {
-            Guid mId = Guid.Parse(id);
-
-            Message? message = await context.Messages.FindAsync(mId);
+            Message? message = await context.Messages.FindAsync(id);
 
             message!.Text = newText;
 
             await context.SaveChangesAsync();
         }
-        public async Task<bool> MessageExistByIdAsync(string id)
+        public async Task<bool> MessageExistByIdAsync(Guid id)
         {
-            Guid mId = Guid.Parse(id);
-
-            return await context.Messages.AnyAsync(m => m.Id == mId && !m.IsDeleted);
+            return await context.Messages.AnyAsync(m => m.Id == id && !m.IsDeleted);
         }
     }
 }
