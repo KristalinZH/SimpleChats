@@ -27,6 +27,17 @@ namespace SimpleChats.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder
+                    .WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -37,6 +48,8 @@ namespace SimpleChats.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors();
 
             app.MapControllers();
 
